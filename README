@@ -1,0 +1,66 @@
+Cache Admin (BETA)
+
+Descrição
+================
+Essa ferramenta serve para ajudar na administração das instalações locais do aplicativo Engine. O Engine é um servidor web e servidor de aplicação, que permite ao usuário desenvolver aplicações web usando apenas javascript. 
+Para mais informações consulte o site:
+	http://www.unum.com.br/o-que-fazemos/modulos/engine/manuais/engine
+
+O desenvolvedor que trabalha com o Engine normalmente acaba com várias instalações (bases) na mesma máquina e precisa, muitas vezes, realizar atividades administrativas como: instalar, apagar ou fazer backup de uma base, descartar o cache de dados de uma base, descartar o cache de chaves, acessar a interface de administração da base (manage), consultar o IP da base servidora etc; Para realizar a maioria dessas atividades, o desenvolvedor precisa acessar a pasta de instalação da base, copiar ou apagar arquivos e/ou diretórios etc;
+
+Foi para facilitar as atividades de administração das bases locais que o cacheAdmin foi desenvolvido. Com ele é possivel, atraves de uma única interface, criar e remover bases, descartar cache de dados e de chaves, consultar informações sobre a base (espaço em disco, URL de acesso ao engine servidor etc), startar uma base, etc. 
+
+Pré-Requisitos
+================
+	- Linux: Ainda não adaptei a aplicação para ambiente windows, qualquer ajuda será bem vinda; Em ambiente windows talvez funcione bem utilizando CYGWIN (http://www.cygwin.com);
+
+	- Wine: Precisamos do wine porque o Engine foi feito para rodar em ambiente Windows;
+
+	- Python: Quase todas as distribuições Linux já possuem o python pré-instalado, mas para utilizar esse software será necessário instalar a versão mais recente da linguagem (3.*);
+
+Configuração
+================
+Antes de poder utilizar essa ferramenta, você precisa configurar duas variáveis, que estão definidas no começo do script:
+
+- DIRETORIO_PADRAO: Diretório onde ficam localizadas as bases. Eu costumo preencher com "/home/usuario/Bases" que é um link simbólico (atalho) para o diretório /home/usuario/.wine/drive_c/Bases;
+
+- DIRETORIO_PADRAO_BACKUP: Diretorio onde serão colocados os backups das bases; 
+
+Para manter a simplicidade, decidi não utilizar um banco de dados para armazenar informações sobre as bases. No lugar de usar um banco de dados, resolvi adotar duas convenções simples: 
+1 - As bases são armazenadas em uma única pasta, seguindo a estrutura: DIRETORIO_PADRAO / <CLIENTE> / <BASE>
+
+2 - Dentro da pasta de cada base serão criados 3 arquivos:
+    base.cfg:   Arquivo que armazena as informações da base;
+    startup.sh: Shellscript para subir a base no Linux;
+    wine.log:   Arquivo com as mensagens emitidas pelo wine;
+
+Utilização
+================
+Ao iniciar a aplicação um pequeno console é exibido("[DYAD]>>>"), onde o usuário poderá digitar comandos para realizar as tarefas de administração das bases. Ao digitar "help" ou "?" o software exibe a lista de comandos disponíveis. Se digitar "help" ou "?" seguido do nome de um comando, o software exibe a descrição do comando.
+
+Exemplo: usando o comando INFO
+[DYAD]>>> ? info
+  Informações da base.
+[DYAD]>>> info <NOME-DA-BASE>
+   Cliente:         <NOME-DO-CLIENTE>
+   Nome:            <NOME-DA-BASE>
+   Local:           file://<PATH-DA-BASE>
+   Endereço:        http://<URL-BASE-SERVIDORA>
+   Manage:          http://<URL-BASE-SERVIDORA>/manage
+   Espaço usado:    1.0 G
+
+Dependendo do terminal utilizado, os endereços LOCAL, REMOTO e MANAGE podem ser exibidos como links que podem ser acionados (clicados), fazendo com que o browser ou o gerenciador de arquivos seja aberto no endereço indicado. 
+
+O software possui também a funcionalidade de auto-completar comandos, nome de bases e nome de clientes, usando a tecla TAB para acionar o auto-complete.
+
+Se ao acionar o auto-complete, houver mais de uma ocorrência para o texto digitado, uma lista das possíveis ocorrências é exibida;
+
+Exemplo: Usando o auto-complete
+[DYAD]>>> info DYAD<TAB>
+DYADDESENVOLVE      DYADDESENVOLVEHDI   DYADHRP2010
+DYADSCRUM           DYADSCRUMD
+
+Alterações Futuras
+===================
+- Colocar as classes de negocio e de apresentação(CMD) em scripts separados. Estavam juntas p/ manter a aplicação em um único script;
+- Criar uma classe de apresentação pra disponibilizar uma interface web usando o framework Bottle;
